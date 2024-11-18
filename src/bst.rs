@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::node::Node;
 use std::cmp::Ordering::*;
 use std::{
@@ -30,9 +28,7 @@ impl<T: Ord, const SIZE: usize> IndexMut<usize> for SearchTree<T, SIZE> {
 impl<T: Ord, const SIZE: usize> SearchTree<T, SIZE> {
     pub fn new() -> Self {
         Self {
-            data: unsafe {
-                MaybeUninit::array_assume_init(core::array::from_fn(|_| MaybeUninit::zeroed()))
-            },
+            data: unsafe { core::array::from_fn(|_| MaybeUninit::zeroed().assume_init()) },
             index_to_insert: 0,
         }
     }

@@ -1,4 +1,3 @@
-#![feature(maybe_uninit_array_assume_init)]
 mod bst;
 mod node;
 
