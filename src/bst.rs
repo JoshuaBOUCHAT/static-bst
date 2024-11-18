@@ -6,26 +6,28 @@ use std::{
     usize,
 };
 
+///An instance of a SearchTree with fixed max size staticaly allocated with an underlying array.
+///The main way to use it is to insert value and check if they are contains
 pub struct SearchTree<T, const SIZE: usize>
 where
-    T: Ord,
+    T: Ord + Clone,
 {
     data: [Node<T>; SIZE],
     index_to_insert: usize,
 }
-impl<T: Ord, const SIZE: usize> Index<usize> for SearchTree<T, SIZE> {
+impl<T: Ord + Clone, const SIZE: usize> Index<usize> for SearchTree<T, SIZE> {
     type Output = Node<T>;
     fn index(&self, index: usize) -> &Self::Output {
         &self.data[index]
     }
 }
-impl<T: Ord, const SIZE: usize> IndexMut<usize> for SearchTree<T, SIZE> {
+impl<T: Ord + Clone, const SIZE: usize> IndexMut<usize> for SearchTree<T, SIZE> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.data[index]
     }
 }
 
-impl<T: Ord, const SIZE: usize> SearchTree<T, SIZE> {
+impl<T: Ord + Clone, const SIZE: usize> SearchTree<T, SIZE> {
     pub fn new() -> Self {
         Self {
             data: unsafe { core::array::from_fn(|_| MaybeUninit::zeroed().assume_init()) },
@@ -63,6 +65,33 @@ impl<T: Ord, const SIZE: usize> SearchTree<T, SIZE> {
                     let idx = self.insert_value(value);
                     self[actual_node].set_left(idx);
                     return true;
+                }
+            }
+        }
+    }
+    ///Check if the Tree contain a value return true if contained false otherwise
+    pub fn contain(&self, value: &T) -> bool {
+        if self.index_to_insert == 0 {
+            return false;
+        }
+        let mut actual_node = 0;
+        loop {
+            match value.cmp(self[actual_node].value()) {
+                Equal => return true,
+
+                Greater => {
+                    if let Some(idx) = self[actual_node].right() {
+                        actual_node = idx;
+                        continue;
+                    }
+                    return false;
+                }
+                Less => {
+                    if let Some(idx) = self[actual_node].left() {
+                        actual_node = idx;
+                        continue;
+                    }
+                    return false;
                 }
             }
         }

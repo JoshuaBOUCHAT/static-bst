@@ -1,4 +1,4 @@
-mod bst;
+pub mod bst;
 mod node;
 
 #[cfg(test)]
@@ -11,5 +11,8 @@ mod tests {
         assert_eq!(tree.insert(100), true);
         assert_eq!(tree.insert(10), true);
         assert_eq!(tree.insert(100), false);
+        assert!(tree.contain(&10));
+        assert!(tree.contain(&100));
+        assert!(!tree.contain(&20));
     }
 }

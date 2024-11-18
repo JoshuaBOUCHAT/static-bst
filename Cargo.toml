@@ -1,7 +1,8 @@
 [package]
-name = "static-best"
+name = "static-bst"
 version = "0.1.0"
 edition = "2021"
+authors = ["Joshua BOUCHAT"]
 
 
 [dependencies]
